@@ -13,7 +13,7 @@ export const maxDuration = 60
 const FRAMES = 7
 
 const VIDEO_PROMPT = `Treat the person in this photo as a frozen, realistic MANNEQUIN of themselves on a turntable. Only the head rotates; nothing else moves or changes.
-- ONE single continuous sweep: start with the head turned about 45 degrees to their LEFT, then rotate slowly and steadily all the way to about 45 degrees to their RIGHT, passing through the frontal position in the middle. Do NOT reverse direction.
+- The clip STARTS frontal (as in the photo). Then the head does ONE smooth, slow, symmetric motion: turn to their LEFT about 45 degrees, come back through frontal at the MIDDLE of the clip, continue to their RIGHT by the SAME amount (about 45 degrees), and return to frontal at the end. Cover BOTH sides EQUALLY, same range and same speed on each side, so both ears are shown the same.
 - DO NOT modify the face at all: identity, features, skin and expression stay EXACTLY as in the photo. The person does NOT smile, talk, blink or emote.
 - Keep the gaze calm and still, as if being examined and staying quiet: the eyes look in the direction the head faces, they do not dart around and never turn toward the camera. Not stiff like a soldier, just naturally still.
 - The ears stay pinned close to the head the entire time. Same hairstyle, same clothing.
