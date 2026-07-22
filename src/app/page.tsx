@@ -1,13 +1,7 @@
 import { Simulator } from '@/components/simulator'
-import { Check, MessageCircle, MapPin } from 'lucide-react'
+import { Check, MessageCircle } from 'lucide-react'
 
 const WHATSAPP = 'https://wa.me/5215520919481'
-
-const ciudades = [
-  'Ciudad de México', 'Naucalpan', 'Metepec', 'Guadalajara',
-  'Monterrey', 'Puebla', 'Querétaro', 'San Luis Potosí',
-  'Cancún', 'Tijuana', 'Torreón', 'Oaxaca', 'Veracruz', 'Chile',
-]
 
 export default function Home() {
   return (
@@ -22,7 +16,6 @@ export default function Home() {
             <a href="#simulador" className="transition-colors hover:text-ink">Simulador</a>
             <a href="#otomodelacion" className="transition-colors hover:text-ink">Otomodelación</a>
             <a href="#lobuloplastia" className="transition-colors hover:text-ink">Lobuloplastía</a>
-            <a href="#sucursales" className="transition-colors hover:text-ink">Sucursales</a>
           </div>
           <a
             href={WHATSAPP}
@@ -35,36 +28,11 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* HERO */}
-      <section id="top" className="relative overflow-hidden px-6 pt-36 pb-24">
+      {/* HERO (stats) */}
+      <section id="top" className="relative overflow-hidden px-6 pt-32 pb-16">
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow rise text-blush">Especialistas en orejas · México y Chile</p>
-          <h1 className="rise mt-6 max-w-4xl text-5xl leading-[0.98] text-ink md:text-7xl lg:text-8xl">
-            Acercamos tus orejas a tu cabeza, sin cirugía.
-          </h1>
-          <p className="rise mt-8 max-w-xl text-lg text-ink-soft">
-            La otomodelación es una técnica sin cortes ni cicatrices que corrige las orejas prominentes
-            con resultados inmediatos. Somos pioneros de la otomodelación en México y Chile.
-          </p>
-          <div className="rise mt-10 flex flex-wrap gap-4">
-            <a
-              href="#simulador"
-              className="rounded-full bg-pine px-7 py-3.5 text-sm font-medium text-bone transition-colors hover:bg-pine-light"
-            >
-              Prueba el simulador
-            </a>
-            <a
-              href={WHATSAPP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-ink/20 px-7 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-ink/5"
-            >
-              Escríbenos por WhatsApp
-            </a>
-          </div>
-
           {/* Stats */}
-          <div className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
             {[
               ['+2,500', 'pacientes atendidos'],
               ['7', 'profesionales con cédula'],
@@ -160,27 +128,6 @@ export default function Home() {
           >
             <MessageCircle className="h-4 w-4" /> Agenda tu sesión
           </a>
-        </div>
-      </section>
-
-      {/* SUCURSALES */}
-      <section id="sucursales" className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="max-w-xl">
-            <p className="eyebrow text-blush">Dónde estamos</p>
-            <h2 className="mt-3 text-5xl text-ink md:text-6xl">Sucursales</h2>
-            <p className="mt-6 text-lg text-ink-soft">
-              Atención presencial en las principales ciudades de México y en Chile.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 md:grid-cols-4">
-            {ciudades.map((c) => (
-              <div key={c} className="flex items-center gap-2 border-b border-line py-3 text-ink">
-                <MapPin className="h-4 w-4 shrink-0 text-pine" strokeWidth={1.5} />
-                <span>{c}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
