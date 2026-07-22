@@ -16,11 +16,12 @@ const bodySchema = z.object({
  */
 const OTOMODELACION_PROMPT = `Eres un cirujano especialista en otoplastia generando una simulación fotorrealista del resultado de una otomodelación (corrección de orejas prominentes / de soplillo).
 
-CAMBIO ÚNICO PERMITIDO — LAS OREJAS:
-- Acerca ambas orejas NOTABLEMENTE hacia la cabeza, reduciendo de forma clara y evidente el ángulo aurículo-cefálico. La diferencia debe verse a simple vista al comparar antes y después.
-- Deja las orejas bien pegadas al cráneo, con proyección mínima como en un resultado real de otoplastia.
+CAMBIO ÚNICO PERMITIDO — LAS OREJAS (HAZLO DRAMÁTICO Y EVIDENTE):
+- Pega ambas orejas FIRMEMENTE contra la cabeza, reduciendo el ángulo aurículo-cefálico al mínimo (orejas casi planas contra el cráneo, como una otoplastia muy exitosa).
+- La corrección debe ser INCONFUNDIBLE: al comparar antes y después, cualquiera debe notar de inmediato que las orejas dejaron de sobresalir. Si dudas, pégalas más.
+- En la vista frontal, el borde externo de la oreja NO debe sobresalir del contorno de la cabeza más de lo mínimo; elimina la prominencia por completo.
 - Define claramente el pliegue del antihélix.
-- Mantén el resultado natural y anatómicamente creíble: pegadas pero sin deformarlas ni aplanarlas de forma artificial.
+- Aun así debe verse como una foto real de una persona (piel y oreja reales), no una caricatura.
 
 TODO LO DEMÁS DEBE QUEDAR PIXEL-IDÉNTICO A LA FOTO ORIGINAL:
 - Mismo encuadre, ángulo, escala, recorte y fondo. NO reencuadres, NO hagas zoom, NO reescales.
