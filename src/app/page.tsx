@@ -28,29 +28,19 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* HERO (stats) */}
-      <section id="top" className="relative overflow-hidden px-6 pt-32 pb-16">
-        <div className="mx-auto max-w-6xl">
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
-            {[
-              ['+2,500', 'pacientes atendidos'],
-              ['7', 'profesionales con cédula'],
-              ['95%', 'de candidatos elegibles'],
-              ['90 días', 'de recuperación total'],
-            ].map(([n, l]) => (
-              <div key={l} className="bg-bone px-6 py-8">
-                <p className="text-4xl text-pine" style={{ fontFamily: 'var(--font-cormorant)' }}>{n}</p>
-                <p className="mt-1 text-sm text-ink-soft">{l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* SIMULADOR */}
-      <section id="simulador" className="border-y border-line bg-bone-deep px-6 py-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="simulador" className="border-b border-line bg-bone-deep px-6 pt-32 pb-24">
+        <div id="top" className="mx-auto max-w-6xl">
+          <div className="mb-14 max-w-2xl">
+            <p className="eyebrow text-blush">Simulador con IA · Clínica Armonízate</p>
+            <h1 className="mt-4 text-4xl leading-[1.02] text-ink md:text-6xl">
+              Mira tus orejas después de la otomodelación
+            </h1>
+            <p className="mt-5 text-lg text-ink-soft">
+              Sube una foto de frente y la IA simula el resultado del tratamiento. Sin cirugía,
+              sin cortes ni cicatrices.
+            </p>
+          </div>
           <Simulator />
         </div>
       </section>

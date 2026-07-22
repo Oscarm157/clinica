@@ -278,8 +278,7 @@ export function Simulator() {
 
       {/* Panel de control */}
       <div>
-        <p className="eyebrow text-blush">Simulador con IA</p>
-        <h2 className="mt-3 text-4xl text-ink md:text-5xl">Ve tu resultado antes de decidir</h2>
+        <h2 className="text-3xl text-ink md:text-4xl">Ve tu resultado antes de decidir</h2>
         <p className="mt-4 text-ink-soft">
           Sube una foto de frente y mira cómo se verían tus orejas después de la otomodelación.
         </p>
