@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getGenAI, IMAGE_MODEL, extractImage } from '@/lib/genai'
+import { nanoBananaEdit, NANO_PRO } from '@/lib/replicate'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -32,10 +32,10 @@ TODO LO DEMÁS DEBE QUEDAR PIXEL-IDÉNTICO A LA FOTO ORIGINAL:
 RESULTADO: una foto clínica real de "después", no un render, filtro ni ilustración.`
 
 export async function POST(request: NextRequest) {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('[simulate] Falta GEMINI_API_KEY')
+  if (!process.env.REPLICATE_API_TOKEN) {
+    console.error('[simulate] Falta REPLICATE_API_TOKEN')
     return NextResponse.json(
-      { success: false, error: 'El simulador no está configurado. Falta la API key.' },
+      { success: false, error: 'El simulador no está configurado. Falta el token.' },
       { status: 500 }
     )
   }
@@ -51,16 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const response = await getGenAI().models.generateContent({
-      model: IMAGE_MODEL,
-      contents: [
-        { text: OTOMODELACION_PROMPT },
-        { inlineData: { mimeType: parsed.mimeType, data: parsed.imageBase64 } },
-      ],
-      config: { responseModalities: ['image', 'text'] },
-    })
-
-    const processed = extractImage(response)
+    const processed = await nanoBananaEdit(OTOMODELACION_PROMPT, parsed.imageBase64, parsed.mimeType, NANO_PRO)
 
     if (!processed) {
       return NextResponse.json(
@@ -72,7 +63,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, processedImageBase64: processed })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    console.error('[simulate] Error de Gemini:', msg)
+    console.error('[simulate] Error:', msg)
     return NextResponse.json(
       { success: false, error: `Error de IA: ${msg.slice(0, 120)}` },
       { status: 500 }

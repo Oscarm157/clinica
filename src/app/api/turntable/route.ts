@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getGenAI, IMAGE_MODEL, extractImage } from '@/lib/genai'
+import { nanoBananaEdit } from '@/lib/replicate'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -43,15 +43,7 @@ async function renderAngle(
 ): Promise<{ angle: number; base64: string } | null> {
   if (angle === 0) return { angle, base64: imageBase64 }
   try {
-    const response = await getGenAI().models.generateContent({
-      model: IMAGE_MODEL,
-      contents: [
-        { text: anglePrompt(angle) },
-        { inlineData: { mimeType, data: imageBase64 } },
-      ],
-      config: { responseModalities: ['image', 'text'] },
-    })
-    const img = extractImage(response)
+    const img = await nanoBananaEdit(anglePrompt(angle), imageBase64, mimeType)
     return img ? { angle, base64: img } : null
   } catch (err) {
     console.error(`[turntable] Ángulo ${angle} falló:`, err instanceof Error ? err.message : err)
@@ -60,10 +52,10 @@ async function renderAngle(
 }
 
 export async function POST(request: NextRequest) {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('[turntable] Falta GEMINI_API_KEY')
+  if (!process.env.REPLICATE_API_TOKEN) {
+    console.error('[turntable] Falta REPLICATE_API_TOKEN')
     return NextResponse.json(
-      { success: false, error: 'El simulador no está configurado. Falta la API key.' },
+      { success: false, error: 'El simulador no está configurado. Falta el token.' },
       { status: 500 }
     )
   }
