@@ -23,13 +23,13 @@ CAMBIO ÚNICO PERMITIDO — LAS OREJAS (HAZLO DRAMÁTICO Y EVIDENTE):
 - Define claramente el pliegue del antihélix.
 - Aun así debe verse como una foto real de una persona (piel y oreja reales), no una caricatura.
 
-TODO LO DEMÁS DEBE QUEDAR PIXEL-IDÉNTICO A LA FOTO ORIGINAL:
-- Mismo encuadre, ángulo, escala, recorte y fondo. NO reencuadres, NO hagas zoom, NO reescales.
-- Misma iluminación, tono y textura de piel.
-- Rostro, peinado, ojos, cejas, nariz, boca, expresión, cuello y ropa: exactamente iguales.
-- La persona debe reconocerse por completo. Cambia solo la proyección de las orejas.
+ATA EL RESTO DE LA IMAGEN (CRÍTICO — preserva la identidad al 100%):
+- Edita ÚNICAMENTE las orejas y su entorno inmediato (la zona pegada a la cabeza). El otro ~90% de la imagen debe quedar PIXEL-IDÉNTICO al original.
+- NO alteres NADA del rostro: ojos, cejas, nariz, boca, forma de la cara, mandíbula, mentón, pómulos, arrugas, lunares y textura de piel EXACTAMENTE iguales. La persona debe verse idéntica, no "parecida".
+- No cambies el peinado, el vello facial, el cuello, la ropa, la iluminación ni el fondo.
+- Mismo encuadre, ángulo, escala y recorte. NO reencuadres, NO hagas zoom, NO reescales.
 
-RESULTADO: una foto clínica real de "después", no un render, filtro ni ilustración.`
+RESULTADO: una foto clínica real de "después" de la MISMA persona, no un render, filtro ni ilustración.`
 
 export async function POST(request: NextRequest) {
   if (!process.env.REPLICATE_API_TOKEN) {
@@ -60,7 +60,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ success: true, processedImageBase64: processed })
+    return NextResponse.json({
+      success: true,
+      processedImageBase64: processed.base64,
+      processedImageUrl: processed.url,
+    })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[simulate] Error:', msg)

@@ -3,7 +3,8 @@
 import { useCallback, useRef, useState } from 'react'
 import { Upload, Sparkles, RotateCcw, AlertCircle, Camera } from 'lucide-react'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider'
-import { Turntable } from './turntable'
+import { VideoTurntable } from './video-turntable'
+import { VideoAds } from './video-ads'
 import { LeadForm } from './lead-form'
 import { CameraCapture } from './camera-capture'
 import { Lead3DGate } from './lead-3d-gate'
@@ -32,8 +33,9 @@ export function Simulator() {
   const [mimeType, setMimeType] = useState<string>('image/jpeg')
   const [base64, setBase64] = useState<string>('')
   const [view, setView] = useState<'compare' | 'antes' | 'despues' | '3d'>('compare')
-  const [frames, setFrames] = useState<string[] | null>(null)
-  const [ttStatus, setTtStatus] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [resultUrl, setResultUrl] = useState<string | null>(null)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [videoStatus, setVideoStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const [lead3d, setLead3d] = useState(false)
   const [mode, setMode] = useState<'upload' | 'camera'>('upload')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -70,9 +72,10 @@ export function Simulator() {
       const data = await res.json()
       if (!data.success) throw new Error(data.error || 'Error desconocido')
       setResult(`data:image/jpeg;base64,${data.processedImageBase64}`)
+      setResultUrl(data.processedImageUrl ?? null)
       setView('compare')
-      setFrames(null)
-      setTtStatus('idle')
+      setVideoUrl(null)
+      setVideoStatus('idle')
       setLead3d(false)
       setStatus('done')
     } catch (e) {
@@ -81,28 +84,38 @@ export function Simulator() {
     }
   }, [base64, mimeType])
 
-  const fetchTurntable = useCallback(async () => {
-    if (!result) return
-    setTtStatus('loading')
+  const startVideo = useCallback(async () => {
+    if (!resultUrl) return
+    setVideoStatus('loading')
     try {
-      const res = await fetch('/api/turntable', {
+      const res = await fetch('/api/video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: result.split(',')[1], mimeType: 'image/jpeg' }),
+        body: JSON.stringify({ imageUrl: resultUrl }),
       })
       const data = await res.json()
-      if (!data.success) throw new Error(data.error || 'Error')
-      setFrames(data.frames.map((f: { base64: string }) => `data:image/jpeg;base64,${f.base64}`))
-      setTtStatus('idle')
+      if (!data.success || !data.id) throw new Error()
+      // Polling hasta que el video esté listo
+      for (let i = 0; i < 90; i++) {
+        await new Promise((r) => setTimeout(r, 4000))
+        const poll = await (await fetch(`/api/video?id=${data.id}`)).json()
+        if (poll.status === 'done' && poll.videoUrl) {
+          setVideoUrl(poll.videoUrl)
+          setVideoStatus('idle')
+          return
+        }
+        if (poll.status === 'error') throw new Error()
+      }
+      throw new Error()
     } catch {
-      setTtStatus('error')
+      setVideoStatus('error')
     }
-  }, [result])
+  }, [resultUrl])
 
   const openTurntable = () => {
     setView('3d')
     // El 3D exige datos: solo genera si el lead ya se capturó.
-    if (lead3d && !frames && ttStatus !== 'loading') fetchTurntable()
+    if (lead3d && !videoUrl && videoStatus !== 'loading') startVideo()
   }
 
   const onCapture = (b64: string, dataUrl: string) => {
@@ -122,8 +135,9 @@ export function Simulator() {
     setBase64('')
     setError(null)
     setView('compare')
-    setFrames(null)
-    setTtStatus('idle')
+    setResultUrl(null)
+    setVideoUrl(null)
+    setVideoStatus('idle')
     setLead3d(false)
     setMode('upload')
     if (inputRef.current) inputRef.current.value = ''
@@ -253,28 +267,19 @@ export function Simulator() {
                   <Lead3DGate
                     onCaptured={() => {
                       setLead3d(true)
-                      fetchTurntable()
+                      startVideo()
                     }}
                   />
                 )}
-                {lead3d && ttStatus === 'loading' && (
-                  <>
-                    <div className="absolute inset-x-0 h-px bg-blush shadow-[0_0_16px_4px_rgba(217,155,130,0.6)] animate-scan" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="flex items-center gap-2 rounded-full bg-bone/90 px-4 py-2 text-sm text-ink">
-                        <Sparkles className="h-4 w-4 text-pine" /> Generando ángulos
-                      </span>
-                    </div>
-                  </>
-                )}
-                {lead3d && ttStatus === 'error' && (
+                {lead3d && videoStatus === 'loading' && <VideoAds />}
+                {lead3d && videoStatus === 'error' && (
                   <div className="absolute inset-0 flex items-center justify-center px-8 text-center text-ink-soft">
-                    <AlertCircle className="mr-2 h-5 w-5" /> No se pudieron generar los ángulos.
+                    <AlertCircle className="mr-2 h-5 w-5" /> No se pudo generar el video.
                   </div>
                 )}
-                {lead3d && ttStatus === 'idle' && frames && (
+                {lead3d && videoStatus === 'idle' && videoUrl && (
                   <div className="absolute inset-0">
-                    <Turntable frames={frames} />
+                    <VideoTurntable videoUrl={videoUrl} />
                   </div>
                 )}
               </>
