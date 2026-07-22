@@ -13,7 +13,7 @@ export const maxDuration = 60
 const FRAMES = 16
 
 const VIDEO_PROMPT = `Treat the person in this photo as a frozen, realistic MANNEQUIN of themselves on a turntable. Only the head rotates; nothing else moves or changes.
-- The clip STARTS frontal (as in the photo). Then ONE smooth, slow, symmetric head rotation: turn to their LEFT until a full side PROFILE (about 90 degrees, the ear fully visible from the side), come back through frontal in the MIDDLE of the clip, then turn to their RIGHT to a full side profile by the SAME amount, and return to frontal. Cover BOTH sides EQUALLY.
+- The clip STARTS frontal (as in the photo). Then ONE smooth, slow head rotation that MUST show BOTH sides: first turn to their LEFT until a full side PROFILE (about 90 degrees, the ear fully visible), come back through frontal at the MIDDLE of the clip, then turn to their RIGHT until the full side profile by the SAME amount, and return to frontal at the end. It is MANDATORY that both the LEFT profile and the RIGHT profile clearly appear; do not stop on one side. Cover both sides EQUALLY and slowly (there is enough time).
 - HARD LIMIT: never rotate PAST a side profile. NEVER show the back of the head, the nape or the far side. ABSOLUTELY NO full 360-degree spin. Stay within the front 180 degrees the whole time.
 - DO NOT modify the face at all: identity, features, skin and expression stay EXACTLY as in the photo. The person does NOT smile, talk, blink or emote.
 - Keep the gaze calm and still, as if being examined and staying quiet: the eyes follow the head's direction, never dart around, never turn toward the camera. Not stiff like a soldier, just naturally still.

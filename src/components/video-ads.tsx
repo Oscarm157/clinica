@@ -40,7 +40,7 @@ export function VideoAds() {
       </div>
 
       <div key={i} className="softfade w-full max-w-sm overflow-hidden rounded-2xl border border-bone/15 bg-bone">
-        <img src={ad.img} alt="Caso real antes y después" className="aspect-square w-full object-cover" />
+        <img src={ad.img} alt="Caso real antes y después" className="aspect-[5/4] w-full object-cover object-center" />
         <div className="p-5">
           <p className="text-xl text-ink" style={{ fontFamily: 'var(--font-cormorant)' }}>
             {ad.titulo}

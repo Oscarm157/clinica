@@ -75,7 +75,7 @@ export async function createSeedanceVideo(imageUrl: string, prompt: string): Pro
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({
-      input: { image: imageUrl, prompt, duration: 5, resolution: '720p', camera_fixed: true },
+      input: { image: imageUrl, prompt, duration: 7, resolution: '720p', camera_fixed: true },
     }),
   })
   if (!res.ok) {

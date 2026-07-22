@@ -23,9 +23,10 @@ REGLA #1 — NO TOQUES EL ENCUADRE (lo más importante):
 REGLA #2 — NO DEFORMES NI CAMBIES LA CARA:
 - Rostro idéntico: ojos, mirada, cejas, nariz, boca, forma de la cara, mandíbula, mentón, pómulos, arrugas, lunares, piel, peinado, vello facial, cuello, ropa, iluminación y fondo EXACTAMENTE iguales. La persona debe verse idéntica, no "parecida". Sin deformaciones.
 
-CAMBIO PERMITIDO — SOLO LAS OREJAS (marcado y evidente):
-- Pega ambas orejas firmemente contra la cabeza, reduciendo al mínimo el ángulo aurículo-cefálico (como una otoplastia muy exitosa). La corrección debe ser inconfundible al comparar antes/después; si dudas, pégalas más. Define el antihélix.
-- Que se vea como una oreja real, no caricatura.
+CAMBIO PERMITIDO — SOLO LAS OREJAS (MUY marcado, aplánalas fuerte):
+- APLANA ambas orejas contra la cabeza al MÁXIMO: reduce el ángulo aurículo-cefálico casi a cero, orejas prácticamente pegadas al cráneo, como una otoplastia muy exitosa y notoria.
+- En la vista frontal, el borde externo de la oreja debe quedar casi alineado con el contorno de la cabeza: ELIMINA la prominencia por completo. La diferencia antes/después debe saltar a la vista; si dudas, pégalas MÁS, no menos.
+- Define el pliegue del antihélix. Que se vea como una oreja real, no caricatura.
 
 RESULTADO: la MISMA foto, mismo encuadre, misma persona, solo con las orejas corregidas.`
 
