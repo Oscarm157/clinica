@@ -1,10 +1,11 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { Upload, Sparkles, RotateCcw, AlertCircle } from 'lucide-react'
+import { Upload, Sparkles, RotateCcw, AlertCircle, Camera } from 'lucide-react'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider'
 import { Turntable } from './turntable'
 import { LeadForm } from './lead-form'
+import { CameraCapture } from './camera-capture'
 
 type Status = 'idle' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -32,6 +33,7 @@ export function Simulator() {
   const [view, setView] = useState<'compare' | 'antes' | 'despues' | '3d'>('compare')
   const [frames, setFrames] = useState<string[] | null>(null)
   const [ttStatus, setTtStatus] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [mode, setMode] = useState<'upload' | 'camera'>('upload')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const loadFile = useCallback(async (file: File) => {
@@ -99,6 +101,16 @@ export function Simulator() {
     if (!frames && ttStatus !== 'loading') fetchTurntable()
   }
 
+  const onCapture = (b64: string, dataUrl: string) => {
+    setError(null)
+    setBase64(b64)
+    setMimeType('image/jpeg')
+    setOriginal(dataUrl)
+    setResult(null)
+    setStatus('ready')
+    setMode('upload')
+  }
+
   const reset = () => {
     setStatus('idle')
     setOriginal(null)
@@ -108,46 +120,60 @@ export function Simulator() {
     setView('compare')
     setFrames(null)
     setTtStatus('idle')
+    setMode('upload')
     if (inputRef.current) inputRef.current.value = ''
   }
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
       {/* Panel visual */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-line bg-bone-deep">
-        {/* IDLE / dropzone */}
-        {status === 'idle' && (
-          <label
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault()
-              const f = e.dataTransfer.files?.[0]
-              if (f) loadFile(f)
-            }}
-            className="group flex h-full w-full cursor-pointer flex-col items-center justify-center gap-4 px-8 text-center transition-colors hover:bg-bone"
-          >
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-pine/10 text-pine transition-transform group-hover:scale-105">
-              <Upload className="h-7 w-7" strokeWidth={1.5} />
-            </div>
-            <div>
-              <p className="text-lg text-ink" style={{ fontFamily: 'var(--font-cormorant)' }}>
-                Sube una foto de frente
-              </p>
-              <p className="mt-1 text-sm text-ink-soft">
-                Arrastra la imagen o haz clic. JPG, PNG o WebP.
-              </p>
-            </div>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0]
+      <div className="relative mx-auto aspect-[4/5] w-full max-w-[85%] overflow-hidden rounded-2xl border border-line bg-bone-deep">
+        {/* IDLE · subir foto */}
+        {status === 'idle' && mode === 'upload' && (
+          <div className="flex h-full w-full flex-col gap-3 p-3">
+            <label
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault()
+                const f = e.dataTransfer.files?.[0]
                 if (f) loadFile(f)
               }}
-            />
-          </label>
+              className="group flex flex-1 cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-pine/40 bg-pine/[0.06] px-8 text-center transition-colors hover:border-pine hover:bg-pine/10"
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-pine text-bone shadow-md transition-transform group-hover:scale-105">
+                <Upload className="h-7 w-7" strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="text-xl text-ink" style={{ fontFamily: 'var(--font-cormorant)' }}>
+                  Sube una foto de frente
+                </p>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Arrastra la imagen o haz clic. JPG, PNG o WebP.
+                </p>
+              </div>
+              <input
+                ref={inputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) loadFile(f)
+                }}
+              />
+            </label>
+            <button
+              onClick={() => setMode('camera')}
+              className="flex items-center justify-center gap-2 rounded-xl border border-line bg-bone py-3 text-sm font-medium text-ink transition-colors hover:border-pine hover:text-pine"
+            >
+              <Camera className="h-4 w-4" /> Usar la cámara
+            </button>
+          </div>
+        )}
+
+        {/* IDLE · cámara en vivo */}
+        {status === 'idle' && mode === 'camera' && (
+          <CameraCapture onCapture={onCapture} onCancel={() => setMode('upload')} />
         )}
 
         {/* READY (foto cargada) */}

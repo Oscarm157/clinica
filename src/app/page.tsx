@@ -34,7 +34,7 @@ export default function Home() {
           <div className="mb-14 max-w-2xl">
             <p className="eyebrow text-blush">Simulador con IA · Clínica Armonízate</p>
             <h1 className="mt-4 text-4xl leading-[1.02] text-ink md:text-6xl">
-              Mira tus orejas después de la otomodelación
+              Simulador de otomodelación con IA
             </h1>
             <p className="mt-5 text-lg text-ink-soft">
               Sube una foto de frente y la IA simula el resultado del tratamiento. Sin cirugía,
