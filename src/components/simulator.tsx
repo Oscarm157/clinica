@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react'
 import { Upload, Sparkles, RotateCcw, AlertCircle } from 'lucide-react'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider'
 import { Turntable } from './turntable'
+import { LeadForm } from './lead-form'
 
 type Status = 'idle' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -318,23 +319,16 @@ export function Simulator() {
         </div>
 
         {status === 'done' && (
-          <p className="mt-6 text-sm text-ink-soft">
-            {view === '3d'
-              ? 'Arrastra sobre la imagen para girar y ver las orejas desde varios ángulos. '
-              : view === 'compare'
-                ? 'Desliza sobre la imagen para comparar. '
-                : 'Haz clic en la imagen para alternar antes y después. '}
-            ¿Te gusta el cambio?{' '}
-            <a
-              href="https://wa.me/5215520919481"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-pine underline underline-offset-4"
-            >
-              Agenda tu valoración por WhatsApp
-            </a>
-            .
-          </p>
+          <>
+            <p className="mt-6 text-sm text-ink-soft">
+              {view === '3d'
+                ? 'Arrastra sobre la imagen para girar y ver las orejas desde varios ángulos.'
+                : view === 'compare'
+                  ? 'Desliza sobre la imagen para comparar.'
+                  : 'Haz clic en la imagen para alternar antes y después.'}
+            </p>
+            <LeadForm />
+          </>
         )}
       </div>
     </div>

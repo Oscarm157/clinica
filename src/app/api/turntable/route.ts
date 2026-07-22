@@ -10,8 +10,8 @@ const bodySchema = z.object({
   mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
 })
 
-// Fotogramas de -45° a +45°. El 0° reutiliza la imagen de entrada (no se regenera).
-const ANGLES = [-45, -30, -15, 0, 15, 30, 45]
+// Fotogramas de -60° a +60°. El 0° reutiliza la imagen de entrada (no se regenera).
+const ANGLES = [-60, -40, -20, 0, 20, 40, 60]
 
 function anglePrompt(angle: number): string {
   const dir = angle < 0 ? 'hacia su izquierda' : 'hacia su derecha'

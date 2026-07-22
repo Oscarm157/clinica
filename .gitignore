@@ -17,3 +17,6 @@ next-env.d.ts
 /*.jpeg
 /*.png
 /*.webp
+
+# Store de leads del demo (datos, no código)
+/leads.json

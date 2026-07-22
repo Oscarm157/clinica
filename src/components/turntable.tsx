@@ -1,17 +1,39 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { Move3d } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Move3d, Play, Pause } from 'lucide-react'
 
 const PX_PER_FRAME = 44
 
 export function Turntable({ frames }: { frames: string[] }) {
   const [index, setIndex] = useState(Math.floor(frames.length / 2))
-  const drag = useRef<{ startX: number; startIndex: number } | null>(null)
+  const [playing, setPlaying] = useState(true)
   const [hint, setHint] = useState(true)
+  const drag = useRef<{ startX: number; startIndex: number } | null>(null)
+  const dir = useRef(1)
+
+  // Auto-giro ping-pong
+  useEffect(() => {
+    if (!playing) return
+    const id = setInterval(() => {
+      setIndex((i) => {
+        let next = i + dir.current
+        if (next >= frames.length - 1) {
+          next = frames.length - 1
+          dir.current = -1
+        } else if (next <= 0) {
+          next = 0
+          dir.current = 1
+        }
+        return next
+      })
+    }, 450)
+    return () => clearInterval(id)
+  }, [playing, frames.length])
 
   const onDown = (x: number) => {
     drag.current = { startX: x, startIndex: index }
+    setPlaying(false)
     setHint(false)
   }
   const onMove = (x: number) => {
@@ -45,6 +67,19 @@ export function Turntable({ frames }: { frames: string[] }) {
           style={{ opacity: i === index ? 1 : 0 }}
         />
       ))}
+
+      {/* Play / pausa */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          setPlaying((p) => !p)
+          setHint(false)
+        }}
+        className="absolute bottom-3 left-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-ink/70 text-bone backdrop-blur transition-colors hover:bg-ink"
+        aria-label={playing ? 'Pausar' : 'Reproducir'}
+      >
+        {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+      </button>
 
       {hint && (
         <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
