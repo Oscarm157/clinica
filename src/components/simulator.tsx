@@ -27,6 +27,7 @@ export function Simulator() {
   const [result, setResult] = useState<string | null>(null)
   const [mimeType, setMimeType] = useState<string>('image/jpeg')
   const [base64, setBase64] = useState<string>('')
+  const [view, setView] = useState<'compare' | 'antes' | 'despues'>('compare')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const loadFile = useCallback(async (file: File) => {
@@ -61,6 +62,7 @@ export function Simulator() {
       const data = await res.json()
       if (!data.success) throw new Error(data.error || 'Error desconocido')
       setResult(`data:image/jpeg;base64,${data.processedImageBase64}`)
+      setView('compare')
       setStatus('done')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo procesar la imagen.')
@@ -74,6 +76,7 @@ export function Simulator() {
     setResult(null)
     setBase64('')
     setError(null)
+    setView('compare')
     if (inputRef.current) inputRef.current.value = ''
   }
 
@@ -138,27 +141,56 @@ export function Simulator() {
         {/* DONE: comparador antes/después */}
         {status === 'done' && original && result && (
           <div className="relative h-full w-full select-none">
-            <ReactCompareSlider
-              className="h-full w-full"
-              itemOne={<ReactCompareSliderImage src={original} alt="Antes" style={{ objectFit: 'cover' }} />}
-              itemTwo={<ReactCompareSliderImage src={result} alt="Después" style={{ objectFit: 'cover' }} />}
-              position={50}
-              handle={
-                <div className="flex h-full flex-col items-center">
-                  <div className="w-0.5 flex-1 bg-bone/90 shadow" />
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-bone text-ink shadow-lg ring-1 ring-black/5">
-                    <span className="text-lg leading-none">⇆</span>
-                  </div>
-                  <div className="w-0.5 flex-1 bg-bone/90 shadow" />
-                </div>
-              }
-            />
-            <span className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-ink/70 px-3 py-1 text-xs font-medium text-bone">
-              Antes
-            </span>
-            <span className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-full bg-pine px-3 py-1 text-xs font-medium text-bone">
-              Después
-            </span>
+            {view === 'compare' && (
+              <>
+                <ReactCompareSlider
+                  className="h-full w-full"
+                  itemOne={<ReactCompareSliderImage src={original} alt="Antes" style={{ objectFit: 'cover' }} />}
+                  itemTwo={<ReactCompareSliderImage src={result} alt="Después" style={{ objectFit: 'cover' }} />}
+                  position={50}
+                  handle={
+                    <div className="flex h-full flex-col items-center">
+                      <div className="h-12 w-0.5 bg-bone/90 shadow" />
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-bone text-ink shadow-lg ring-1 ring-black/5">
+                        <span className="text-lg leading-none">⇆</span>
+                      </div>
+                      <div className="w-0.5 flex-1 bg-bone/90 shadow" />
+                    </div>
+                  }
+                />
+                <span className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-ink/70 px-3 py-1 text-xs font-medium text-bone">
+                  Antes
+                </span>
+                <span className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-full bg-pine px-3 py-1 text-xs font-medium text-bone">
+                  Después
+                </span>
+              </>
+            )}
+            {view === 'antes' && (
+              <img src={original} alt="Antes" className="h-full w-full object-cover" />
+            )}
+            {view === 'despues' && (
+              <img src={result} alt="Después" className="h-full w-full object-cover" />
+            )}
+
+            {/* Toggle rápido antes/después, aparte del slider */}
+            <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 gap-1 rounded-full bg-ink/70 p-1 backdrop-blur">
+              {([
+                ['compare', 'Comparar'],
+                ['antes', 'Antes'],
+                ['despues', 'Después'],
+              ] as const).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setView(key)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    view === key ? 'bg-bone text-ink' : 'text-bone/90 hover:text-bone'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
