@@ -1,0 +1,19 @@
+/node_modules
+/.next
+/out
+/build
+.env
+.env.local
+.env*.local
+*.pem
+npm-debug.log*
+.DS_Store
+next-env.d.ts
+.vercel
+/coverage
+
+# Fotos de prueba / pacientes sueltas en la raíz (no son assets de la app)
+/*.jpg
+/*.jpeg
+/*.png
+/*.webp

@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta Clínica Armonízate: marfil cálido + verde armonía + blush */
+  --color-bone: #f7f3ec;
+  --color-bone-deep: #efe8dc;
+  --color-ink: #211f1b;
+  --color-ink-soft: #57534a;
+  --color-pine: #24463f;
+  --color-pine-light: #33685c;
+  --color-blush: #d99b82;
+  --color-blush-soft: #e8bfae;
+  --color-line: #e2daca;
+
+  --font-inter: var(--font-inter);
+  --font-cormorant: var(--font-cormorant);
+}
+
+:root {
+  --background: #f7f3ec;
+  --foreground: #211f1b;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.02;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #24463f;
+  color: #f7f3ec;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .eyebrow {
+    font-family: var(--font-inter), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+}
+
+/* Reveal on scroll */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scan line del simulador */
+@keyframes scan {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.animate-scan {
+  animation: scan 2.2s ease-in-out infinite;
+  will-change: top;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: shimmer 1.6s infinite;
+}
