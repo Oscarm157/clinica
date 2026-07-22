@@ -24,8 +24,13 @@ ESTABILIDAD DE LA TOMA (CRÍTICO, para que el giro no "salte"):
 - Mantén la mirada al frente y la LÍNEA DE LOS OJOS a la MISMA ALTURA que en la foto original.
 - La cabeza debe ocupar el mismo tamaño y quedar centrada en el mismo punto del encuadre; misma distancia y altura de cámara. No hagas zoom ni muevas el sujeto arriba/abajo.
 
+MIRADA Y EXPRESIÓN CONGELADAS (CRÍTICO para que no "cobre vida"):
+- Trátalo como girar una figura/maniquí realista de la persona en un turntable: SOLO rota la cabeza, NADA más se mueve.
+- La MIRADA acompaña el giro de la cabeza: los ojos miran en la MISMA dirección a la que apunta la cara. NUNCA dirijas los ojos hacia la cámara ni al frente del encuadre.
+- Expresión EXACTAMENTE IGUAL a la foto original: misma boca cerrada y neutra, mismos párpados. No sonrías, no cambies el gesto, no abras/cierres los ojos.
+
 CONSISTENCIA:
-- Es la misma persona: rostro, piel, peinado, vello facial y expresión idénticos.
+- Es la misma persona: rostro, piel, peinado y vello facial idénticos.
 - Mantén las orejas pegadas a la cabeza (otomodelación ya aplicada).
 - Misma iluminación de estudio y el mismo fondo liso y neutro.
 - Fotorrealista, como una foto real. Sin texto, sin marcos, sin otros cambios.`
