@@ -16,6 +16,8 @@ export function CameraCapture({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [status, setStatus] = useState<Status>('requesting')
   const [error, setError] = useState<string | null>(null)
+  const [earsOn, setEarsOn] = useState(false)
+  const earsRef = useRef(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const landmarkerRef = useRef<any>(null)
   const rafRef = useRef<number | null>(null)
@@ -111,8 +113,32 @@ export function CameraCapture({
             utils.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: '#d99b82', lineWidth: 1.75 })
             utils.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: '#e8bfae', lineWidth: 2 })
             utils.drawConnectors(lm, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: '#e8bfae', lineWidth: 2 })
+
+            // Marcadores de orejas (landmarks 234 / 454, junto a cada oreja)
+            for (const idx of [234, 454]) {
+              const pt = lm[idx]
+              if (!pt) continue
+              const x = pt.x * canvas.width
+              const y = pt.y * canvas.height
+              ctx.shadowColor = 'rgba(217,155,130,1)'
+              ctx.shadowBlur = 14
+              ctx.strokeStyle = '#d99b82'
+              ctx.lineWidth = 2.5
+              ctx.beginPath()
+              ctx.arc(x, y, 11, 0, 2 * Math.PI)
+              ctx.stroke()
+              ctx.fillStyle = '#d99b82'
+              ctx.beginPath()
+              ctx.arc(x, y, 3, 0, 2 * Math.PI)
+              ctx.fill()
+            }
             ctx.shadowBlur = 0
           }
+        }
+        const has = !!res.faceLandmarks?.length
+        if (has !== earsRef.current) {
+          earsRef.current = has
+          setEarsOn(has)
         }
       }
       rafRef.current = requestAnimationFrame(() => loop(FaceLandmarker, DrawingUtils))
@@ -191,8 +217,12 @@ export function CameraCapture({
               <span key={c} className={`absolute h-7 w-7 border-bone/70 ${c}`} />
             ))}
           </div>
-          <p className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 rounded-full bg-ink/60 px-4 py-1.5 text-xs font-medium text-bone backdrop-blur">
-            Coloca tu rostro dentro del encuadre
+          <p
+            className={`pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 rounded-full px-4 py-1.5 text-xs font-medium text-bone backdrop-blur transition-colors ${
+              earsOn ? 'bg-pine/90' : 'bg-ink/60'
+            }`}
+          >
+            {earsOn ? '✓ Orejas detectadas' : 'Coloca tu rostro dentro del encuadre'}
           </p>
           <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-3">
             <button

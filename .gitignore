@@ -20,3 +20,4 @@ next-env.d.ts
 
 # Store de leads del demo (datos, no código)
 /leads.json
+.env*
