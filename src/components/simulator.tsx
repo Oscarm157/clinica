@@ -8,6 +8,7 @@ import { VideoAds } from './video-ads'
 import { LeadForm } from './lead-form'
 import { CameraCapture } from './camera-capture'
 import { Lead3DGate } from './lead-3d-gate'
+import { sortFramesByYaw, alignDespuesToAntes } from '@/lib/face'
 
 type Status = 'idle' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -72,7 +73,10 @@ export function Simulator() {
       })
       const data = await res.json()
       if (!data.success) throw new Error(data.error || 'Error desconocido')
-      setResult(`data:image/jpeg;base64,${data.processedImageBase64}`)
+      const despues = `data:image/jpeg;base64,${data.processedImageBase64}`
+      // Alinear el "después" al "antes" (por los ojos) para que el comparador solape.
+      const aligned = original ? await alignDespuesToAntes(original, despues) : despues
+      setResult(aligned)
       setResultUrl(data.processedImageUrl ?? null)
       setView('compare')
       setVideoUrl(null)
@@ -103,7 +107,11 @@ export function Simulator() {
         const poll = await (await fetch(`/api/video?id=${data.id}`)).json()
         if (poll.status === 'done' && poll.videoUrl) {
           setVideoUrl(poll.videoUrl)
-          setVideoFrames(Array.isArray(poll.frames) ? poll.frames : [])
+          // Ordenar los frames por ángulo real (izq→frontal→der) antes de mostrar.
+          const ordered = Array.isArray(poll.frames) && poll.frames.length
+            ? await sortFramesByYaw(poll.frames, 7)
+            : []
+          setVideoFrames(ordered)
           setVideoStatus('idle')
           return
         }

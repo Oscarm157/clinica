@@ -10,12 +10,13 @@ import ffmpegStatic from 'ffmpeg-static'
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
-const FRAMES = 7
+const FRAMES = 16
 
 const VIDEO_PROMPT = `Treat the person in this photo as a frozen, realistic MANNEQUIN of themselves on a turntable. Only the head rotates; nothing else moves or changes.
-- The clip STARTS frontal (as in the photo). Then the head does ONE smooth, slow, symmetric motion: turn to their LEFT about 45 degrees, come back through frontal at the MIDDLE of the clip, continue to their RIGHT by the SAME amount (about 45 degrees), and return to frontal at the end. Cover BOTH sides EQUALLY, same range and same speed on each side, so both ears are shown the same.
+- The clip STARTS frontal (as in the photo). Then ONE smooth, slow, symmetric head rotation: turn to their LEFT until a full side PROFILE (about 90 degrees, the ear fully visible from the side), come back through frontal in the MIDDLE of the clip, then turn to their RIGHT to a full side profile by the SAME amount, and return to frontal. Cover BOTH sides EQUALLY.
+- HARD LIMIT: never rotate PAST a side profile. NEVER show the back of the head, the nape or the far side. ABSOLUTELY NO full 360-degree spin. Stay within the front 180 degrees the whole time.
 - DO NOT modify the face at all: identity, features, skin and expression stay EXACTLY as in the photo. The person does NOT smile, talk, blink or emote.
-- Keep the gaze calm and still, as if being examined and staying quiet: the eyes look in the direction the head faces, they do not dart around and never turn toward the camera. Not stiff like a soldier, just naturally still.
+- Keep the gaze calm and still, as if being examined and staying quiet: the eyes follow the head's direction, never dart around, never turn toward the camera. Not stiff like a soldier, just naturally still.
 - The ears stay pinned close to the head the entire time. Same hairstyle, same clothing.
 - The camera is completely fixed. Plain neutral studio background, steady soft lighting. No zoom, no text, no effects. Photorealistic, subtle natural motion.`
 

@@ -10,7 +10,7 @@ export function VideoTurntable({ videoUrl, frames }: { videoUrl: string; frames:
   return (
     <div className="relative h-full w-full select-none">
       {mode === 'girar' && frames.length > 0 ? (
-        <Turntable frames={frames.map((f) => `data:image/jpeg;base64,${f}`)} />
+        <Turntable frames={frames} />
       ) : (
         <video src={videoUrl} className="h-full w-full object-cover" muted playsInline loop autoPlay />
       )}

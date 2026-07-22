@@ -14,23 +14,20 @@ const bodySchema = z.object({
  * Prompt de otomodelación: acercar las orejas a la cabeza (corregir orejas
  * prominentes / de soplillo) sin tocar nada más de la imagen.
  */
-const OTOMODELACION_PROMPT = `Eres un cirujano especialista en otoplastia generando una simulación fotorrealista del resultado de una otomodelación (corrección de orejas prominentes / de soplillo).
+const OTOMODELACION_PROMPT = `Edita esta foto cambiando ÚNICAMENTE las orejas (corrección de otomodelación). Es una edición local, NO una regeneración de la imagen.
 
-CAMBIO ÚNICO PERMITIDO — LAS OREJAS (HAZLO DRAMÁTICO Y EVIDENTE):
-- Pega ambas orejas FIRMEMENTE contra la cabeza, reduciendo el ángulo aurículo-cefálico al mínimo (orejas casi planas contra el cráneo, como una otoplastia muy exitosa).
-- La corrección debe ser INCONFUNDIBLE: al comparar antes y después, cualquiera debe notar de inmediato que las orejas dejaron de sobresalir. Si dudas, pégalas más.
-- En la vista frontal, el borde externo de la oreja NO debe sobresalir del contorno de la cabeza más de lo mínimo; elimina la prominencia por completo.
-- Define claramente el pliegue del antihélix.
-- Aun así debe verse como una foto real de una persona (piel y oreja reales), no una caricatura.
+REGLA #1 — NO TOQUES EL ENCUADRE (lo más importante):
+- El resultado debe tener EXACTAMENTE el mismo encuadre que la entrada: misma composición, mismo recorte, la cabeza del MISMO tamaño y en la MISMA posición.
+- PROHIBIDO hacer zoom (ni acercar ni alejar), PROHIBIDO reencuadrar, reescalar, recortar, mover o rotar al sujeto. Si superpusieras el antes y el después, TODO debe coincidir pixel a pixel salvo las orejas.
 
-ATA EL RESTO DE LA IMAGEN (CRÍTICO — preserva la identidad al 100%):
-- Edita ÚNICAMENTE las orejas y su entorno inmediato (la zona pegada a la cabeza). El otro ~90% de la imagen debe quedar PIXEL-IDÉNTICO al original.
-- NO alteres NADA del rostro: ojos, cejas, nariz, boca, forma de la cara, mandíbula, mentón, pómulos, arrugas, lunares y textura de piel EXACTAMENTE iguales. La persona debe verse idéntica, no "parecida".
-- La mirada queda natural y al frente, con los mismos ojos del original (no vidriosos, no alterados, sin cambiar hacia dónde miran).
-- No cambies el peinado, el vello facial, el cuello, la ropa, la iluminación ni el fondo.
-- Mismo encuadre, ángulo, escala y recorte. NO reencuadres, NO hagas zoom, NO reescales.
+REGLA #2 — NO DEFORMES NI CAMBIES LA CARA:
+- Rostro idéntico: ojos, mirada, cejas, nariz, boca, forma de la cara, mandíbula, mentón, pómulos, arrugas, lunares, piel, peinado, vello facial, cuello, ropa, iluminación y fondo EXACTAMENTE iguales. La persona debe verse idéntica, no "parecida". Sin deformaciones.
 
-RESULTADO: una foto clínica real de "después" de la MISMA persona, no un render, filtro ni ilustración.`
+CAMBIO PERMITIDO — SOLO LAS OREJAS (marcado y evidente):
+- Pega ambas orejas firmemente contra la cabeza, reduciendo al mínimo el ángulo aurículo-cefálico (como una otoplastia muy exitosa). La corrección debe ser inconfundible al comparar antes/después; si dudas, pégalas más. Define el antihélix.
+- Que se vea como una oreja real, no caricatura.
+
+RESULTADO: la MISMA foto, mismo encuadre, misma persona, solo con las orejas corregidas.`
 
 export async function POST(request: NextRequest) {
   if (!process.env.REPLICATE_API_TOKEN) {
