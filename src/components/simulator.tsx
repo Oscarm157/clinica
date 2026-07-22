@@ -204,7 +204,7 @@ export function Simulator() {
                   className="h-full w-full"
                   itemOne={<ReactCompareSliderImage src={original} alt="Antes" style={{ objectFit: 'cover' }} />}
                   itemTwo={<ReactCompareSliderImage src={result} alt="Después" style={{ objectFit: 'cover' }} />}
-                  position={50}
+                  defaultPosition={50}
                   handle={
                     <div className="flex h-full flex-col items-center">
                       <div className="h-12 w-0.5 bg-bone/90 shadow" />
