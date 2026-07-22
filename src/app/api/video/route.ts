@@ -12,9 +12,9 @@ export const maxDuration = 60
 
 const FRAMES = 16
 
-const VIDEO_PROMPT = `Treat the person in this photo as a frozen, realistic MANNEQUIN of themselves on a turntable. Only the head rotates; nothing else moves or changes.
-- The clip STARTS frontal (as in the photo). Then ONE smooth, slow head rotation that MUST show BOTH sides: first turn to their LEFT until a full side PROFILE (about 90 degrees, the ear fully visible), come back through frontal at the MIDDLE of the clip, then turn to their RIGHT until the full side profile by the SAME amount, and return to frontal at the end. It is MANDATORY that both the LEFT profile and the RIGHT profile clearly appear; do not stop on one side. Cover both sides EQUALLY and slowly (there is enough time).
-- HARD LIMIT: never rotate PAST a side profile. NEVER show the back of the head, the nape or the far side. ABSOLUTELY NO full 360-degree spin. Stay within the front 180 degrees the whole time.
+const VIDEO_PROMPT = `Treat the person in this photo as a frozen, realistic MANNEQUIN of themselves. Only the head turns; nothing else moves or changes.
+- The head slowly shakes "no": one calm, slow, continuous side-to-side turning motion. It turns to their LEFT until the LEFT ear is fully visible in side profile, then smoothly turns to their RIGHT until the RIGHT ear is fully visible in side profile, gently oscillating. BOTH ears must clearly be shown in profile during the clip.
+- HARD LIMIT: never rotate PAST a side profile, NEVER show the back of the head or the nape, ABSOLUTELY NO 360-degree spin. Stay within the front 180 degrees.
 - DO NOT modify the face at all: identity, features, skin and expression stay EXACTLY as in the photo. The person does NOT smile, talk, blink or emote.
 - Keep the gaze calm and still, as if being examined and staying quiet: the eyes follow the head's direction, never dart around, never turn toward the camera. Not stiff like a soldier, just naturally still.
 - The ears stay pinned close to the head the entire time. Same hairstyle, same clothing.

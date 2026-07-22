@@ -68,22 +68,31 @@ export async function nanoBananaEdit(
   return { base64: Buffer.from(await img.arrayBuffer()).toString('base64'), url }
 }
 
-/** Crea la predicción de video Seedance (image-to-video). Devuelve el id. */
+/** Crea la predicción de video Seedance (image-to-video). Reintenta si Replicate throttlea
+ * (429 con crédito bajo = ráfaga de 1, la 2ª llamada tras el 2D se cae). Devuelve el id. */
 export async function createSeedanceVideo(imageUrl: string, prompt: string): Promise<string | null> {
   if (!process.env.REPLICATE_API_TOKEN) return null
-  const res = await fetch(`${API}/models/${SEEDANCE}/predictions`, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({
-      input: { image: imageUrl, prompt, duration: 7, resolution: '720p', camera_fixed: true },
-    }),
+  const body = JSON.stringify({
+    input: { image: imageUrl, prompt, duration: 7, resolution: '720p', camera_fixed: true },
   })
-  if (!res.ok) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(`${API}/models/${SEEDANCE}/predictions`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body,
+    })
+    if (res.ok) {
+      const pred: Prediction = await res.json()
+      return (pred as unknown as { id?: string }).id ?? null
+    }
+    if (res.status === 429 && attempt < 3) {
+      await new Promise((r) => setTimeout(r, 12000)) // esperar la ventana de la ráfaga
+      continue
+    }
     console.error('[replicate] seedance HTTP', res.status, (await res.text()).slice(0, 200))
     return null
   }
-  const pred: Prediction = await res.json()
-  return (pred as unknown as { id?: string }).id ?? null
+  return null
 }
 
 /** Consulta una predicción por id (para polling del video). */
