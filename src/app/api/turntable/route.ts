@@ -10,19 +10,23 @@ const bodySchema = z.object({
   mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
 })
 
-// Fotogramas de -60° a +60°. El 0° reutiliza la imagen de entrada (no se regenera).
-const ANGLES = [-60, -40, -20, 0, 20, 40, 60]
+// Fotogramas de -75° a +75° (extremos amplios). El 0° reutiliza la imagen de entrada.
+const ANGLES = [-75, -50, -25, 0, 25, 50, 75]
 
 function anglePrompt(angle: number): string {
   const dir = angle < 0 ? 'hacia su izquierda' : 'hacia su derecha'
   return `Esta es una foto frontal de una persona con las orejas ya corregidas (pegadas a la cabeza).
-Genera la MISMA persona vista con la cabeza girada ${Math.abs(angle)} grados ${dir} (rotación en yaw), como un fotograma de un giro de estudio.
+Genera la MISMA persona vista con la cabeza girada ${Math.abs(angle)} grados ${dir}, como un fotograma de un giro de estudio (turntable) perfectamente estabilizado.
 
-REGLAS:
-- Es la misma persona: conserva idénticos el rostro, la piel, el peinado, el vello facial y la expresión.
-- Mantén las orejas pegadas a la cabeza (resultado de otomodelación ya aplicado).
+ESTABILIDAD DE LA TOMA (CRÍTICO, para que el giro no "salte"):
+- Gira la cabeza SOLO en horizontal (yaw). NO cambies la inclinación vertical (pitch): la persona no debe levantar ni bajar el rostro.
+- Mantén la mirada al frente y la LÍNEA DE LOS OJOS a la MISMA ALTURA que en la foto original.
+- La cabeza debe ocupar el mismo tamaño y quedar centrada en el mismo punto del encuadre; misma distancia y altura de cámara. No hagas zoom ni muevas el sujeto arriba/abajo.
+
+CONSISTENCIA:
+- Es la misma persona: rostro, piel, peinado, vello facial y expresión idénticos.
+- Mantén las orejas pegadas a la cabeza (otomodelación ya aplicada).
 - Misma iluminación de estudio y el mismo fondo liso y neutro.
-- Encuadre centrado, misma escala y distancia de cámara; solo cambia el ángulo de la cabeza.
 - Fotorrealista, como una foto real. Sin texto, sin marcos, sin otros cambios.`
 }
 
