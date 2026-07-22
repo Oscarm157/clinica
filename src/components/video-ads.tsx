@@ -27,7 +27,7 @@ const ADS = [
 export function VideoAds() {
   const [i, setI] = useState(0)
   useEffect(() => {
-    const id = setInterval(() => setI((v) => (v + 1) % ADS.length), 8000)
+    const id = setInterval(() => setI((v) => (v + 1) % ADS.length), 10000)
     return () => clearInterval(id)
   }, [])
 
@@ -39,14 +39,8 @@ export function VideoAds() {
         <span className="text-sm">Preparando tu video, tarda cerca de un minuto…</span>
       </div>
 
-      <div key={i} className="rise w-full max-w-sm overflow-hidden rounded-2xl border border-bone/15 bg-bone">
-        <div className="relative">
-          <img src={ad.img} alt="Caso real antes y después" className="h-40 w-full object-cover" />
-          <div className="absolute inset-x-0 bottom-0 flex justify-between px-3 py-1.5 text-[11px] font-medium text-bone">
-            <span className="rounded-full bg-ink/70 px-2 py-0.5">Antes</span>
-            <span className="rounded-full bg-pine/90 px-2 py-0.5">Después</span>
-          </div>
-        </div>
+      <div key={i} className="softfade w-full max-w-sm overflow-hidden rounded-2xl border border-bone/15 bg-bone">
+        <img src={ad.img} alt="Caso real antes y después" className="aspect-square w-full object-cover" />
         <div className="p-5">
           <p className="text-xl text-ink" style={{ fontFamily: 'var(--font-cormorant)' }}>
             {ad.titulo}

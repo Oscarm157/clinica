@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { nanoBananaEdit, NANO_PRO } from '@/lib/replicate'
+import { nanoBananaEdit } from '@/lib/replicate'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const processed = await nanoBananaEdit(OTOMODELACION_PROMPT, parsed.imageBase64, parsed.mimeType, NANO_PRO)
+    const processed = await nanoBananaEdit(OTOMODELACION_PROMPT, parsed.imageBase64, parsed.mimeType)
 
     if (!processed) {
       return NextResponse.json(

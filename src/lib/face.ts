@@ -75,17 +75,20 @@ export async function sortFramesByYaw(base64Frames: string[], pick = 7): Promise
 }
 
 /**
- * Alinea el "después" al "antes" por los ojos (escala + traslación) sobre un canvas
- * del tamaño del "antes", para que el comparador solape aunque el modelo haya hecho zoom.
- * Devuelve el dataURL alineado, o el original si no detecta rostro.
+ * Alinea el "después" al "antes" por los ojos (escala + traslación) y RECORTA ambas a la
+ * región común, para que queden del MISMO tamaño y encuadre, sin bordes negros. Solo cambian
+ * las orejas. Devuelve el par recortado, o las originales si no detecta rostro.
  */
-export async function alignDespuesToAntes(antes: string, despues: string): Promise<string> {
+export async function alignDespuesToAntes(
+  antes: string,
+  despues: string
+): Promise<{ antes: string; despues: string }> {
   try {
     const lm = await getLandmarker()
     const [ia, id] = await Promise.all([loadImg(antes), loadImg(despues)])
     const a = lm.detect(ia).faceLandmarks?.[0]
     const d = lm.detect(id).faceLandmarks?.[0]
-    if (!a || !d) return despues
+    if (!a || !d) return { antes, despues }
 
     const eye = (pts: { x: number; y: number }[], img: HTMLImageElement, i: number) => ({
       x: pts[i].x * img.width,
@@ -97,22 +100,42 @@ export async function alignDespuesToAntes(antes: string, despues: string): Promi
     const d2 = eye(d, id, 263)
     const distA = Math.hypot(a2.x - a1.x, a2.y - a1.y)
     const distD = Math.hypot(d2.x - d1.x, d2.y - d1.y)
-    if (distD < 1) return despues
+    if (distD < 1) return { antes, despues }
     const s = distA / distD
     const midA = { x: (a1.x + a2.x) / 2, y: (a1.y + a2.y) / 2 }
     const midD = { x: (d1.x + d2.x) / 2, y: (d1.y + d2.y) / 2 }
 
-    const cv = document.createElement('canvas')
-    cv.width = ia.width
-    cv.height = ia.height
-    const ctx = cv.getContext('2d')
-    if (!ctx) return despues
-    ctx.translate(midA.x, midA.y)
-    ctx.scale(s, s)
-    ctx.translate(-midD.x, -midD.y)
-    ctx.drawImage(id, 0, 0)
-    return cv.toDataURL('image/jpeg', 0.95)
+    // "Después" alineado sobre un lienzo del tamaño del "antes"
+    const aligned = document.createElement('canvas')
+    aligned.width = ia.width
+    aligned.height = ia.height
+    const actx = aligned.getContext('2d')
+    if (!actx) return { antes, despues }
+    actx.translate(midA.x, midA.y)
+    actx.scale(s, s)
+    actx.translate(-midD.x, -midD.y)
+    actx.drawImage(id, 0, 0)
+
+    // Región cubierta por el "después" escalado (para no dejar negro)
+    const x0 = Math.max(0, midA.x - s * midD.x)
+    const y0 = Math.max(0, midA.y - s * midD.y)
+    const x1 = Math.min(ia.width, midA.x + s * (id.width - midD.x))
+    const y1 = Math.min(ia.height, midA.y + s * (id.height - midD.y))
+    const cw = Math.max(1, Math.round(x1 - x0))
+    const ch = Math.max(1, Math.round(y1 - y0))
+    const cx = Math.round(x0)
+    const cy = Math.round(y0)
+
+    const crop = (srcCanvasOrImg: CanvasImageSource) => {
+      const c = document.createElement('canvas')
+      c.width = cw
+      c.height = ch
+      c.getContext('2d')!.drawImage(srcCanvasOrImg, cx, cy, cw, ch, 0, 0, cw, ch)
+      return c.toDataURL('image/jpeg', 0.95)
+    }
+
+    return { antes: crop(ia), despues: crop(aligned) }
   } catch {
-    return despues
+    return { antes, despues }
   }
 }

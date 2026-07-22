@@ -74,9 +74,12 @@ export function Simulator() {
       const data = await res.json()
       if (!data.success) throw new Error(data.error || 'Error desconocido')
       const despues = `data:image/jpeg;base64,${data.processedImageBase64}`
-      // Alinear el "después" al "antes" (por los ojos) para que el comparador solape.
-      const aligned = original ? await alignDespuesToAntes(original, despues) : despues
-      setResult(aligned)
+      // Alinear + recortar ambas a la región común (mismo tamaño, sin bordes negros).
+      const al = original
+        ? await alignDespuesToAntes(original, despues)
+        : { antes: original, despues }
+      if (al.antes) setOriginal(al.antes)
+      setResult(al.despues)
       setResultUrl(data.processedImageUrl ?? null)
       setView('compare')
       setVideoUrl(null)
