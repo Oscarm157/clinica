@@ -10,9 +10,9 @@ const bodySchema = z.object({
   mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
 })
 
-// Fotogramas de -50° a +50°, más juntos hacia el centro (giro más suave).
+// Intermedios juntos (giro suave al centro) y extremos lejanos (giro notorio).
 // El 0° reutiliza la imagen de entrada (no se regenera).
-const ANGLES = [-50, -35, -15, 0, 15, 35, 50]
+const ANGLES = [-70, -42, -18, 0, 18, 42, 70]
 
 function anglePrompt(angle: number): string {
   const dir = angle < 0 ? 'hacia su izquierda' : 'hacia su derecha'

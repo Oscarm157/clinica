@@ -6,6 +6,7 @@ import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slide
 import { Turntable } from './turntable'
 import { LeadForm } from './lead-form'
 import { CameraCapture } from './camera-capture'
+import { Lead3DGate } from './lead-3d-gate'
 
 type Status = 'idle' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -33,6 +34,7 @@ export function Simulator() {
   const [view, setView] = useState<'compare' | 'antes' | 'despues' | '3d'>('compare')
   const [frames, setFrames] = useState<string[] | null>(null)
   const [ttStatus, setTtStatus] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [lead3d, setLead3d] = useState(false)
   const [mode, setMode] = useState<'upload' | 'camera'>('upload')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -71,6 +73,7 @@ export function Simulator() {
       setView('compare')
       setFrames(null)
       setTtStatus('idle')
+      setLead3d(false)
       setStatus('done')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo procesar la imagen.')
@@ -98,7 +101,8 @@ export function Simulator() {
 
   const openTurntable = () => {
     setView('3d')
-    if (!frames && ttStatus !== 'loading') fetchTurntable()
+    // El 3D exige datos: solo genera si el lead ya se capturó.
+    if (lead3d && !frames && ttStatus !== 'loading') fetchTurntable()
   }
 
   const onCapture = (b64: string, dataUrl: string) => {
@@ -120,6 +124,7 @@ export function Simulator() {
     setView('compare')
     setFrames(null)
     setTtStatus('idle')
+    setLead3d(false)
     setMode('upload')
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -242,23 +247,36 @@ export function Simulator() {
             )}
             {view === '3d' && (
               <>
-                {ttStatus === 'loading' && (
-                  <div className="relative h-full w-full">
-                    <img src={result} alt="Generando ángulos" className="h-full w-full object-cover opacity-60" />
+                {/* Fondo: el resultado 2D mientras se pide datos / genera */}
+                <img src={result} alt="Resultado" className="h-full w-full object-cover opacity-60" />
+                {!lead3d && (
+                  <Lead3DGate
+                    onCaptured={() => {
+                      setLead3d(true)
+                      fetchTurntable()
+                    }}
+                  />
+                )}
+                {lead3d && ttStatus === 'loading' && (
+                  <>
                     <div className="absolute inset-x-0 h-px bg-blush shadow-[0_0_16px_4px_rgba(217,155,130,0.6)] animate-scan" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="flex items-center gap-2 rounded-full bg-bone/90 px-4 py-2 text-sm text-ink">
                         <Sparkles className="h-4 w-4 text-pine" /> Generando ángulos
                       </span>
                     </div>
-                  </div>
+                  </>
                 )}
-                {ttStatus === 'error' && (
-                  <div className="flex h-full w-full items-center justify-center px-8 text-center text-ink-soft">
+                {lead3d && ttStatus === 'error' && (
+                  <div className="absolute inset-0 flex items-center justify-center px-8 text-center text-ink-soft">
                     <AlertCircle className="mr-2 h-5 w-5" /> No se pudieron generar los ángulos.
                   </div>
                 )}
-                {ttStatus === 'idle' && frames && <Turntable frames={frames} />}
+                {lead3d && ttStatus === 'idle' && frames && (
+                  <div className="absolute inset-0">
+                    <Turntable frames={frames} />
+                  </div>
+                )}
               </>
             )}
 

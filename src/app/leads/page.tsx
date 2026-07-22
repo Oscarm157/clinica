@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-type Lead = { nombre: string; telefono: string; tratamiento: string; fecha: string }
+type Lead = { nombre: string; telefono: string; correo?: string; tratamiento: string; fecha: string }
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[] | null>(null)
@@ -34,6 +34,7 @@ export default function LeadsPage() {
                 <tr>
                   <th className="px-4 py-3 font-medium">Nombre</th>
                   <th className="px-4 py-3 font-medium">Teléfono</th>
+                  <th className="px-4 py-3 font-medium">Correo</th>
                   <th className="px-4 py-3 font-medium">Tratamiento</th>
                   <th className="px-4 py-3 font-medium">Fecha</th>
                 </tr>
@@ -52,6 +53,7 @@ export default function LeadsPage() {
                         {l.telefono}
                       </a>
                     </td>
+                    <td className="px-4 py-3 text-ink-soft">{l.correo || '—'}</td>
                     <td className="px-4 py-3 text-ink-soft">{l.tratamiento}</td>
                     <td className="px-4 py-3 text-ink-soft">
                       {new Date(l.fecha).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })}

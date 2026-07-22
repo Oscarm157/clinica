@@ -10,6 +10,7 @@ const LEADS_FILE = path.join(process.cwd(), 'leads.json')
 const leadSchema = z.object({
   nombre: z.string().trim().min(2, 'Nombre requerido').max(80),
   telefono: z.string().trim().min(7, 'Teléfono inválido').max(20),
+  correo: z.string().trim().email('Correo inválido').max(120).optional(),
   tratamiento: z.enum(['Otomodelación', 'Lobuloplastía']),
 })
 
