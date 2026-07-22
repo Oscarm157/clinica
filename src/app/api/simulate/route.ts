@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GoogleGenAI } from '@google/genai'
 import { z } from 'zod'
+import { getGenAI, IMAGE_MODEL, extractImage } from '@/lib/genai'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
-
-let genai: GoogleGenAI | null = null
-function getGenAI() {
-  if (!genai) genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! })
-  return genai
-}
 
 const bodySchema = z.object({
   imageBase64: z.string().min(100, 'Imagen inválida'),
@@ -57,7 +51,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const response = await getGenAI().models.generateContent({
-      model: 'gemini-3-pro-image-preview',
+      model: IMAGE_MODEL,
       contents: [
         { text: OTOMODELACION_PROMPT },
         { inlineData: { mimeType: parsed.mimeType, data: parsed.imageBase64 } },
@@ -65,13 +59,7 @@ export async function POST(request: NextRequest) {
       config: { responseModalities: ['image', 'text'] },
     })
 
-    let processed: string | null = null
-    for (const part of response.candidates?.[0]?.content?.parts ?? []) {
-      if (part.inlineData?.data) {
-        processed = part.inlineData.data
-        break
-      }
-    }
+    const processed = extractImage(response)
 
     if (!processed) {
       return NextResponse.json(

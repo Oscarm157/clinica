@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { Upload, Sparkles, RotateCcw, AlertCircle } from 'lucide-react'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider'
+import { Turntable } from './turntable'
 
 type Status = 'idle' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -27,7 +28,9 @@ export function Simulator() {
   const [result, setResult] = useState<string | null>(null)
   const [mimeType, setMimeType] = useState<string>('image/jpeg')
   const [base64, setBase64] = useState<string>('')
-  const [view, setView] = useState<'compare' | 'antes' | 'despues'>('compare')
+  const [view, setView] = useState<'compare' | 'antes' | 'despues' | '3d'>('compare')
+  const [frames, setFrames] = useState<string[] | null>(null)
+  const [ttStatus, setTtStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const loadFile = useCallback(async (file: File) => {
@@ -63,12 +66,37 @@ export function Simulator() {
       if (!data.success) throw new Error(data.error || 'Error desconocido')
       setResult(`data:image/jpeg;base64,${data.processedImageBase64}`)
       setView('compare')
+      setFrames(null)
+      setTtStatus('idle')
       setStatus('done')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo procesar la imagen.')
       setStatus('error')
     }
   }, [base64, mimeType])
+
+  const fetchTurntable = useCallback(async () => {
+    if (!result) return
+    setTtStatus('loading')
+    try {
+      const res = await fetch('/api/turntable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: result.split(',')[1], mimeType: 'image/jpeg' }),
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error || 'Error')
+      setFrames(data.frames.map((f: { base64: string }) => `data:image/jpeg;base64,${f.base64}`))
+      setTtStatus('idle')
+    } catch {
+      setTtStatus('error')
+    }
+  }, [result])
+
+  const openTurntable = () => {
+    setView('3d')
+    if (!frames && ttStatus !== 'loading') fetchTurntable()
+  }
 
   const reset = () => {
     setStatus('idle')
@@ -77,6 +105,8 @@ export function Simulator() {
     setBase64('')
     setError(null)
     setView('compare')
+    setFrames(null)
+    setTtStatus('idle')
     if (inputRef.current) inputRef.current.value = ''
   }
 
@@ -166,14 +196,46 @@ export function Simulator() {
                 </span>
               </>
             )}
-            {view === 'antes' && (
-              <img src={original} alt="Antes" className="h-full w-full object-cover" />
+            {(view === 'antes' || view === 'despues') && (
+              <>
+                <img
+                  src={view === 'antes' ? original : result}
+                  alt={view === 'antes' ? 'Antes' : 'Después'}
+                  onClick={() => setView(view === 'antes' ? 'despues' : 'antes')}
+                  className="h-full w-full cursor-pointer object-cover"
+                />
+                <span
+                  className={`pointer-events-none absolute bottom-3 left-3 z-10 rounded-full px-3 py-1 text-xs font-medium text-bone ${
+                    view === 'antes' ? 'bg-ink/70' : 'bg-pine'
+                  }`}
+                >
+                  {view === 'antes' ? 'Antes' : 'Después'} · clic para alternar
+                </span>
+              </>
             )}
-            {view === 'despues' && (
-              <img src={result} alt="Después" className="h-full w-full object-cover" />
+            {view === '3d' && (
+              <>
+                {ttStatus === 'loading' && (
+                  <div className="relative h-full w-full">
+                    <img src={result} alt="Generando ángulos" className="h-full w-full object-cover opacity-60" />
+                    <div className="absolute inset-x-0 h-px bg-blush shadow-[0_0_16px_4px_rgba(217,155,130,0.6)] animate-scan" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="flex items-center gap-2 rounded-full bg-bone/90 px-4 py-2 text-sm text-ink">
+                        <Sparkles className="h-4 w-4 text-pine" /> Generando ángulos
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {ttStatus === 'error' && (
+                  <div className="flex h-full w-full items-center justify-center px-8 text-center text-ink-soft">
+                    <AlertCircle className="mr-2 h-5 w-5" /> No se pudieron generar los ángulos.
+                  </div>
+                )}
+                {ttStatus === 'idle' && frames && <Turntable frames={frames} />}
+              </>
             )}
 
-            {/* Toggle rápido antes/después, aparte del slider */}
+            {/* Toggle rápido antes/después/3D, aparte del slider */}
             <div className="absolute left-1/2 top-3 z-20 flex -translate-x-1/2 gap-1 rounded-full bg-ink/70 p-1 backdrop-blur">
               {([
                 ['compare', 'Comparar'],
@@ -190,6 +252,14 @@ export function Simulator() {
                   {label}
                 </button>
               ))}
+              <button
+                onClick={openTurntable}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  view === '3d' ? 'bg-bone text-ink' : 'text-bone/90 hover:text-bone'
+                }`}
+              >
+                3D
+              </button>
             </div>
           </div>
         )}
@@ -249,7 +319,12 @@ export function Simulator() {
 
         {status === 'done' && (
           <p className="mt-6 text-sm text-ink-soft">
-            Desliza sobre la imagen para comparar. ¿Te gusta el cambio?{' '}
+            {view === '3d'
+              ? 'Arrastra sobre la imagen para girar y ver las orejas desde varios ángulos. '
+              : view === 'compare'
+                ? 'Desliza sobre la imagen para comparar. '
+                : 'Haz clic en la imagen para alternar antes y después. '}
+            ¿Te gusta el cambio?{' '}
             <a
               href="https://wa.me/5215520919481"
               target="_blank"
