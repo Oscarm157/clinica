@@ -35,6 +35,7 @@ export function Simulator() {
   const [view, setView] = useState<'compare' | 'antes' | 'despues' | '3d'>('compare')
   const [resultUrl, setResultUrl] = useState<string | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [videoFrames, setVideoFrames] = useState<string[]>([])
   const [videoStatus, setVideoStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const [lead3d, setLead3d] = useState(false)
   const [mode, setMode] = useState<'upload' | 'camera'>('upload')
@@ -75,6 +76,7 @@ export function Simulator() {
       setResultUrl(data.processedImageUrl ?? null)
       setView('compare')
       setVideoUrl(null)
+      setVideoFrames([])
       setVideoStatus('idle')
       setLead3d(false)
       setStatus('done')
@@ -101,6 +103,7 @@ export function Simulator() {
         const poll = await (await fetch(`/api/video?id=${data.id}`)).json()
         if (poll.status === 'done' && poll.videoUrl) {
           setVideoUrl(poll.videoUrl)
+          setVideoFrames(Array.isArray(poll.frames) ? poll.frames : [])
           setVideoStatus('idle')
           return
         }
@@ -137,6 +140,7 @@ export function Simulator() {
     setView('compare')
     setResultUrl(null)
     setVideoUrl(null)
+    setVideoFrames([])
     setVideoStatus('idle')
     setLead3d(false)
     setMode('upload')
@@ -279,7 +283,7 @@ export function Simulator() {
                 )}
                 {lead3d && videoStatus === 'idle' && videoUrl && (
                   <div className="absolute inset-0">
-                    <VideoTurntable videoUrl={videoUrl} />
+                    <VideoTurntable videoUrl={videoUrl} frames={videoFrames} />
                   </div>
                 )}
               </>

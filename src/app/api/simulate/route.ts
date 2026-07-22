@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { nanoBananaEdit } from '@/lib/replicate'
+import { nanoBananaEdit, NANO_PRO } from '@/lib/replicate'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -26,6 +26,7 @@ CAMBIO ÚNICO PERMITIDO — LAS OREJAS (HAZLO DRAMÁTICO Y EVIDENTE):
 ATA EL RESTO DE LA IMAGEN (CRÍTICO — preserva la identidad al 100%):
 - Edita ÚNICAMENTE las orejas y su entorno inmediato (la zona pegada a la cabeza). El otro ~90% de la imagen debe quedar PIXEL-IDÉNTICO al original.
 - NO alteres NADA del rostro: ojos, cejas, nariz, boca, forma de la cara, mandíbula, mentón, pómulos, arrugas, lunares y textura de piel EXACTAMENTE iguales. La persona debe verse idéntica, no "parecida".
+- La mirada queda natural y al frente, con los mismos ojos del original (no vidriosos, no alterados, sin cambiar hacia dónde miran).
 - No cambies el peinado, el vello facial, el cuello, la ropa, la iluminación ni el fondo.
 - Mismo encuadre, ángulo, escala y recorte. NO reencuadres, NO hagas zoom, NO reescales.
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const processed = await nanoBananaEdit(OTOMODELACION_PROMPT, parsed.imageBase64, parsed.mimeType)
+    const processed = await nanoBananaEdit(OTOMODELACION_PROMPT, parsed.imageBase64, parsed.mimeType, NANO_PRO)
 
     if (!processed) {
       return NextResponse.json(
