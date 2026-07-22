@@ -29,16 +29,15 @@ export default function Home() {
       </header>
 
       {/* SIMULADOR */}
-      <section id="simulador" className="border-b border-line bg-bone-deep px-6 pt-32 pb-24">
+      <section id="simulador" className="border-b border-line bg-bone-deep px-6 pt-24 pb-16">
         <div id="top" className="mx-auto max-w-6xl">
-          <div className="mb-14 max-w-2xl">
+          <div className="mb-7 max-w-2xl">
             <p className="eyebrow text-blush">Simulador con IA · Clínica Armonízate</p>
-            <h1 className="mt-4 text-4xl leading-[1.02] text-ink md:text-6xl">
+            <h1 className="mt-3 text-3xl leading-[1.03] text-ink md:text-5xl">
               Simulador de otomodelación con IA
             </h1>
-            <p className="mt-5 text-lg text-ink-soft">
-              Sube una foto de frente y la IA simula el resultado del tratamiento. Sin cirugía,
-              sin cortes ni cicatrices.
+            <p className="mt-3 text-base text-ink-soft md:text-lg">
+              Sube una foto de frente y la IA simula el resultado. Sin cirugía, sin cortes ni cicatrices.
             </p>
           </div>
           <Simulator />

@@ -127,7 +127,7 @@ export function Simulator() {
   return (
     <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
       {/* Panel visual */}
-      <div className="relative mx-auto aspect-[4/5] w-full max-w-[85%] overflow-hidden rounded-2xl border border-line bg-bone-deep">
+      <div className="relative mx-auto aspect-[8/9] w-full max-w-[85%] overflow-hidden rounded-2xl border border-line bg-bone-deep">
         {/* IDLE · subir foto */}
         {status === 'idle' && mode === 'upload' && (
           <div className="flex h-full w-full flex-col gap-3 p-3">
